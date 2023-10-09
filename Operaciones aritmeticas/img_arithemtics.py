@@ -102,15 +102,15 @@ def cuasi_diff(img1, img2, format):
         return Image.fromarray(output.astype(np.int8), mode="RGB")
     
 def if_lighter(img1, img2, format):
-    """This function performs pixel-by-pixel substravtion of images according to format
+    """Outputs image made from brightest pixels between the 2 inputs
 
     Args:
-        img1 (PIL image): First image to be summed
-        img2 (PIL image): Second image to be summed
+        img1 (PIL image): First image
+        img2 (PIL image): Second image
         format (str): Possible values are those in FORMATS
 
     Returns:
-        PIL image of img1+img2
+        PIL image with brightest pixels
     """
     if format == "YIQ promedio" or format == "YIQ clamp":
         yiq1 = rgb_to_yiq(np.array(img1))
@@ -126,15 +126,15 @@ def if_lighter(img1, img2, format):
         return Image.fromarray(output.astype(np.int8), mode="RGB")
     
 def if_darker(img1, img2, format):
-    """This function performs pixel-by-pixel substravtion of images according to format
+    """Outputs image made from darkest pixels between the 2 inputs
 
     Args:
-        img1 (PIL image): First image to be summed
-        img2 (PIL image): Second image to be summed
+        img1 (PIL image): First image
+        img2 (PIL image): Second image
         format (str): Possible values are those in FORMATS
 
     Returns:
-        PIL image of img1+img2
+        PIL image with darkest pixels
     """
     if format == "YIQ promedio" or format == "YIQ clamp":
         yiq1 = rgb_to_yiq(np.array(img1))

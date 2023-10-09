@@ -5,26 +5,27 @@ import img_arithemtics as ar
 
 #Constants
 N_IMG_BUTTONS = 4
+IMAGE_COLUMNS=9
 OPS_DICT = {"Suma":ar.cuasi_sum, "Resta":ar.cuasi_diff, "If-lighter":ar.if_lighter, "If-darker":ar.if_darker}
 IMAGE_TYPES = [("Images", "*.png"), ("Images", "*.jpg"), ("Images", "*.jpeg")]
 #Global variables
 img_arr = [None]*3
 tk_imgs = [None]*3
 
-def upload_file(img_index):
+def upload_file(img_index, master):
     filename = filedialog.askopenfilename(filetypes=IMAGE_TYPES)
-    img = Image.open(filename).convert("RGB").resize((200,200))
+    img = Image.open(filename).convert("RGB").resize((270,270))
     tk_img= ImageTk.PhotoImage(img)
-    b2 =Button(images_frame,image=tk_img)
-    b2.grid(row=0,column=img_index)
+    b2 =Button(master,image=tk_img)
+    b2.grid(row=0)
     img_arr[img_index] = img
     tk_imgs[img_index] = tk_img
 
-def process_img(img1, img2):
+def process_img(img1, img2, master):
     img_arr[-1] = OPS_DICT[selected_op.get()](img1, img2, selected_format.get())
     tk_imgs[-1] = ImageTk.PhotoImage(img_arr[-1])
-    b3 =Button(images_frame,image=tk_imgs[-1])
-    b3.grid(row=0,column=2)
+    b3 =Button(master,image=tk_imgs[-1])
+    b3.grid(row=0,columnspan=6)
 
 def save_img(img):
     if img is not None:
@@ -34,23 +35,29 @@ def save_img(img):
 def create_image_frame(master):
     global images_frame
     images_frame = Frame(master)
-    images_frame.grid(row=0, ipady=150)
+    images_frame.grid(row=0)
     #Create image upload buttons
-    b1 = Button(images_frame, text='Cargar primera imagen', 
-    width=20,command = lambda:upload_file(0))
-    b1.grid(row=1,column=0)
+    first_image_frame = Frame(images_frame)
+    b1 = Button(first_image_frame, text='Cargar primera imagen', 
+    width=20,command = lambda:upload_file(0, first_image_frame))
+    b1.grid(row=1)
+    first_image_frame.grid(row=0,column=0)
 
-    b2 = Button(images_frame, text='Cargar segunda imagen', 
-    width=20,command = lambda:upload_file(1))
-    b2.grid(row=1,column=1)
+    second_image_frame = Frame(images_frame)
+    b2 = Button(second_image_frame, text='Cargar segunda imagen', 
+    width=20,command = lambda:upload_file(1, second_image_frame))
+    b2.grid(row=1)
+    second_image_frame.grid(row=0,column=1)
 
-    b3 = Button(images_frame, text='Procesar', 
-    width=20,command = lambda:process_img(img_arr[0], img_arr[1]))
-    b3.grid(row=1,column=2)
+    third_image_frame = Frame(images_frame)
+    b3 = Button(third_image_frame, text='Procesar', 
+    width=20,command = lambda:process_img(img_arr[0], img_arr[1], third_image_frame))
+    b3.grid(row=1, column=0)
 
-    b4 = Button(images_frame, text='Guardar', 
+    b4 = Button(third_image_frame, text='Guardar', 
     width=20,command = lambda:save_img(img_arr[-1]))
-    b4.grid(row=1,column=3)
+    b4.grid(row=1, column=1)
+    third_image_frame.grid(row=0,column=2)
 
 def create_ops(master):
     operations_frame = Frame(master)
@@ -67,7 +74,7 @@ def create_ops(master):
 
 root = Tk()
 root.title("Operaciones aritmeticas entre imagenes")
-root.geometry("1300x800+50+50")  # width x height + x + y
+root.geometry("900x400+50+50")  # width x height + x + y
 
 #String vars
 selected_op = StringVar()
