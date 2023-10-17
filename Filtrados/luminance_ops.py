@@ -36,12 +36,18 @@ def yiq_to_rgb(yiq_img):
 def pow2_ilum(img):
     yiq_img = rgb_to_yiq(np.array(img))
     yiq_img[:,:,0] = yiq_img[:,:,0]**2
-    return Image.fromarray( yiq_to_rgb(yiq_img).astype(np.int8), mode="RGB" )
+    rgb_img = yiq_to_rgb(yiq_img)
+    rgb_img[rgb_img>255] = 255
+    rgb_img[rgb_img<0] = 0
+    return Image.fromarray( rgb_img.astype(np.uint8), mode="RGB" )
 
 def sqrt_ilum(img):
     yiq_img = rgb_to_yiq(np.array(img))
     yiq_img[:,:,0] = np.sqrt(yiq_img[:,:,0])
-    return Image.fromarray( yiq_to_rgb(yiq_img).astype(np.int8), mode="RGB" )
+    rgb_img = yiq_to_rgb(yiq_img)
+    rgb_img[rgb_img>255] = 255
+    rgb_img[rgb_img<0] = 0
+    return Image.fromarray( rgb_img.astype(np.uint8), mode="RGB" )
 
 def lineal_ilum(img, ymin=0.2, ymax=1):
     yiq_img = rgb_to_yiq(np.array(img))
@@ -50,16 +56,23 @@ def lineal_ilum(img, ymin=0.2, ymax=1):
     #Saturate
     output[yiq_img[:,:,0]<ymin] = 0 
     output[yiq_img[:,:,0]>ymax] = 1
-    return Image.fromarray( yiq_to_rgb(output).astype(np.int8), mode="RGB" )
+
+    rgb_img = yiq_to_rgb(output)
+    rgb_img[rgb_img>255] = 255
+    rgb_img[rgb_img<0] = 0
+    return Image.fromarray( rgb_img.astype(np.uint8), mode="RGB" )
 
 def equalize_ilum(img):
     yiq_img = rgb_to_yiq(np.array(img))
     output = yiq_img.copy()
-    img_counts, bins = np.histogram(yiq_img[:,:,0], bins=50, density=True)
+    img_counts, bins = np.histogram((yiq_img[:,:,0]*255).astype(np.uint8), bins=256, density=True)
     cum_hist = np.cumsum(img_counts)
     # use linear interpolation of cdf to find new pixel values
-    image_equalized = np.interp(yiq_img[:,:,0].flatten(), bins[:-1], cum_hist)
+    image_equalized = np.interp((yiq_img[:,:,0]*255).astype(np.uint8).flatten(), bins[:-1], cum_hist)
     
     output[:,:,0] = image_equalized.reshape(output[:,:,0].shape)
-    return Image.fromarray( yiq_to_rgb(output).astype(np.int8), mode="RGB" )
+    rgb_img = yiq_to_rgb(output)
+    rgb_img[rgb_img>255] = 255
+    rgb_img[rgb_img<0] = 0
+    return Image.fromarray( rgb_img.astype(np.uint8), mode="RGB" )
 

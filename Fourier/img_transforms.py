@@ -12,7 +12,7 @@ def fourier_transform(img, phase=None):
     img_spectrum = img_spectrum - SPECTRUM_MIN
     img_phase = np.angle(np.fft.fftshift(np.fft.fft2(np.array(img))))
     img_phase = 255*(img_phase - PHASE_MIN)/(PHASE_MAX-PHASE_MIN) #Take to 0-255 range
-    return Image.fromarray( img_spectrum.astype(np.int8), mode="L" ).resize((600,600)), Image.fromarray( img_phase.astype(np.int8), mode="L" ).resize((600,600))
+    return Image.fromarray( img_spectrum.astype(np.uint8), mode="L" ).resize((600,600)), Image.fromarray( img_phase.astype(np.uint8), mode="L" ).resize((600,600))
 
 def inv_fourier(img_spectrum, img_phase):
     #Denorm spectrum
@@ -24,4 +24,4 @@ def inv_fourier(img_spectrum, img_phase):
     img_fft = img_amp*(np.cos(phase_denorm)+1j*np.sin(phase_denorm))
     img = np.abs( np.fft.ifft2(np.fft.ifftshift(img_fft)) )
     img = 255*(img-img.min())/(img.max()-img.min())
-    return Image.fromarray( img.astype(np.int8), mode="L" ).resize((600,600)), img_phase
+    return Image.fromarray( img.astype(np.uint8), mode="L" ).resize((600,600)), img_phase

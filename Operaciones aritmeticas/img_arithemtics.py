@@ -51,7 +51,7 @@ def cuasi_sum(img1, img2, format):
         #Calcualte I and Q values
         output[:,:,1] = ((yiq1[:,:,0]*yiq1[:,:,1])+(yiq2[:,:,0]*yiq2[:,:,1])) / (yiq1[:,:,0]+yiq2[:,:,0])
         output[:,:,2] = ((yiq1[:,:,0]*yiq1[:,:,2])+(yiq2[:,:,0]*yiq2[:,:,2])) / (yiq1[:,:,0]+yiq2[:,:,0])
-        return Image.fromarray(yiq_to_rgb(output).astype(np.int8), mode="RGB")
+        return Image.fromarray(yiq_to_rgb(output).astype(np.uint8), mode="RGB")
     elif format == "YIQ clamp":
         yiq1 = rgb_to_yiq(np.array(img1))
         yiq2 = rgb_to_yiq(np.array(img2))
@@ -59,13 +59,13 @@ def cuasi_sum(img1, img2, format):
         #Calcualte I and Q values
         output[:,:,1] = ((yiq1[:,:,0]*yiq1[:,:,1])+(yiq2[:,:,0]*yiq2[:,:,1])) / (yiq1[:,:,0]+yiq2[:,:,0])
         output[:,:,2] = ((yiq1[:,:,0]*yiq1[:,:,2])+(yiq2[:,:,0]*yiq2[:,:,2])) / (yiq1[:,:,0]+yiq2[:,:,0])
-        return Image.fromarray(yiq_to_rgb(output).astype(np.int8), mode="RGB")
+        return Image.fromarray(yiq_to_rgb(output).astype(np.uint8), mode="RGB")
     elif format == "RGB promedio":
         output = (np.array(img1)+np.array(img2))//2
-        return Image.fromarray(output.astype(np.int8), mode="RGB")
+        return Image.fromarray(output.astype(np.uint8), mode="RGB")
     elif format == "RGB clamp":
         output = (np.array(img1)+np.array(img2)).clip(0,255)
-        return Image.fromarray(output.astype(np.int8), mode="RGB")
+        return Image.fromarray(output.astype(np.uint8), mode="RGB")
     
 def cuasi_diff(img1, img2, format):
     """This function performs pixel-by-pixel substraction of images according to format
@@ -85,7 +85,7 @@ def cuasi_diff(img1, img2, format):
         #Calcualte I and Q values
         output[:,:,1] = ((yiq1[:,:,0]*yiq1[:,:,1])+(yiq2[:,:,0]*yiq2[:,:,1])) / (yiq1[:,:,0]+yiq2[:,:,0])
         output[:,:,2] = ((yiq1[:,:,0]*yiq1[:,:,2])+(yiq2[:,:,0]*yiq2[:,:,2])) / (yiq1[:,:,0]+yiq2[:,:,0])
-        return Image.fromarray( ((yiq_to_rgb(output)+255)/2).astype(np.int8), mode="RGB" )
+        return Image.fromarray( ((yiq_to_rgb(output)+255)/2).astype(np.uint8), mode="RGB" )
     elif format == "YIQ clamp":
         yiq1 = rgb_to_yiq(np.array(img1))
         yiq2 = rgb_to_yiq(np.array(img2))
@@ -93,13 +93,13 @@ def cuasi_diff(img1, img2, format):
         #Calcualte I and Q values
         output[:,:,1] = ((yiq1[:,:,0]*yiq1[:,:,1])+(yiq2[:,:,0]*yiq2[:,:,1])) / (yiq1[:,:,0]+yiq2[:,:,0])
         output[:,:,2] = ((yiq1[:,:,0]*yiq1[:,:,2])+(yiq2[:,:,0]*yiq2[:,:,2])) / (yiq1[:,:,0]+yiq2[:,:,0])
-        return Image.fromarray(yiq_to_rgb(output).astype(np.int8), mode="RGB")
+        return Image.fromarray(yiq_to_rgb(output).astype(np.uint8), mode="RGB")
     elif format == "RGB promedio":
         output = (np.array(img1)-np.array(img2)+255)//2
-        return Image.fromarray(output.astype(np.int8), mode="RGB")
+        return Image.fromarray(output.astype(np.uint8), mode="RGB")
     elif format == "RGB clamp":
         output = (np.array(img1)-np.array(img2)).clip(0,255)
-        return Image.fromarray(output.astype(np.int8), mode="RGB")
+        return Image.fromarray(output.astype(np.uint8), mode="RGB")
     
 def if_lighter(img1, img2, format):
     """Outputs image made from brightest pixels between the 2 inputs
@@ -117,13 +117,13 @@ def if_lighter(img1, img2, format):
         yiq2 = rgb_to_yiq(np.array(img2))
         output = yiq2
         output[yiq1[:,:,0]>yiq2[:,:,0]] = yiq1[yiq1[:,:,0]>yiq2[:,:,0]]
-        return Image.fromarray(yiq_to_rgb(output).astype(np.int8), mode="RGB")
+        return Image.fromarray(yiq_to_rgb(output).clip(0,255).astype(np.uint8), mode="RGB")
     elif format == "RGB promedio" or format == "RGB clamp":
         output = np.array(img2)
         mag1 = img1.convert("L")
         mag2 = img2.convert("L")
         output[np.array(mag1)>np.array(mag2)] = np.array(img1)[np.array(mag1)>np.array(mag2)]
-        return Image.fromarray(output.astype(np.int8), mode="RGB")
+        return Image.fromarray(output.astype(np.uint8), mode="RGB")
     
 def if_darker(img1, img2, format):
     """Outputs image made from darkest pixels between the 2 inputs
@@ -141,10 +141,10 @@ def if_darker(img1, img2, format):
         yiq2 = rgb_to_yiq(np.array(img2))
         output = yiq2
         output[yiq1[:,:,0]<yiq2[:,:,0]] = yiq1[yiq1[:,:,0]<yiq2[:,:,0]]
-        return Image.fromarray(yiq_to_rgb(output).astype(np.int8), mode="RGB")
+        return Image.fromarray(yiq_to_rgb(output).clip(0,255).astype(np.uint8), mode="RGB")
     elif format == "RGB promedio" or format == "RGB clamp":
         output = np.array(img2)
         mag1 = img1.convert("L")
         mag2 = img2.convert("L")
         output[np.array(mag1)<np.array(mag2)] = np.array(img1)[np.array(mag1)<np.array(mag2)]
-        return Image.fromarray(output.astype(np.int8), mode="RGB")
+        return Image.fromarray(output.astype(np.uint8), mode="RGB")
