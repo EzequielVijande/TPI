@@ -24,7 +24,7 @@ def yiq_to_rgb(yiq_img):
   height = yiq_img.shape[0]
   width = yiq_img.shape[1]
   mat = np.array([
-      [1, 0.9663, 0.6210],
+      [1, 0.9563, 0.6210],
       [1, -0.2721, -0.6474],
       [1, -1.1070, 1.7046]
   ])
