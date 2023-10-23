@@ -1,4 +1,8 @@
 import numpy as np
+from scipy.ndimage import rotate
+
+dir_dict = {"N":0, "NE":-45, "E":-90, "SE":-135,
+                    "S":180, "SW":135, "W":90, "NW": 45}
 
 def rgb_to_yiq(rgb_img):
   norm_img = rgb_img/255
@@ -98,3 +102,10 @@ def laplace_kernel(version):
                 ])
     return laplaciano
 
+def directional_kernel(angle):
+   n_kernel = np.array([
+                      [1,2,1],
+                      [0,0,0],
+                      [-1,-2,-1]
+                      ])
+   return rotate(n_kernel, angle, reshape=False)
