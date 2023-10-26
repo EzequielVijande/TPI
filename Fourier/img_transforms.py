@@ -15,13 +15,16 @@ def fourier_transform(img, phase=None):
     return Image.fromarray( img_spectrum.astype(np.uint8), mode="L" ).resize((600,600)), Image.fromarray( img_phase.astype(np.uint8), mode="L" ).resize((600,600))
 
 def inv_fourier(img_spectrum, img_phase):
-    #Denorm spectrum
-    spectrum_denorm = np.array(img_spectrum)+SPECTRUM_MIN
-    img_amp = 10**(spectrum_denorm/20)
-    #Denorm phase
-    phase_denorm = np.array(img_phase)*(PHASE_MAX-PHASE_MIN)/255+PHASE_MIN
-    #Reconstruct fourier transform
-    img_fft = img_amp*(np.cos(phase_denorm)+1j*np.sin(phase_denorm))
-    img = np.abs( np.fft.ifft2(np.fft.ifftshift(img_fft)) )
-    img = 255*(img-img.min())/(img.max()-img.min())
-    return Image.fromarray( img.astype(np.uint8), mode="L" ).resize((600,600)), img_phase
+    if (img_spectrum is not None) and (img_phase is not None):
+        #Denorm spectrum
+        spectrum_denorm = np.array(img_spectrum)+SPECTRUM_MIN
+        img_amp = 10**(spectrum_denorm/20)
+        #Denorm phase
+        phase_denorm = np.array(img_phase)*(PHASE_MAX-PHASE_MIN)/255+PHASE_MIN
+        #Reconstruct fourier transform
+        img_fft = img_amp*(np.cos(phase_denorm)+1j*np.sin(phase_denorm))
+        img = np.abs( np.fft.ifft2(np.fft.ifftshift(img_fft)) )
+        img = 255*(img-img.min())/(img.max()-img.min())
+        return Image.fromarray( img.astype(np.uint8), mode="L" ).resize((600,600)), img_phase
+    else:
+        return None, None
