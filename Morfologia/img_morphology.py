@@ -1,6 +1,4 @@
 import numpy as np
-from PIL import Image
-from matplotlib import pyplot as plt
 
 def erode(img,size=3):
     output = np.zeros_like(np.array(img))
@@ -9,10 +7,10 @@ def erode(img,size=3):
     #Create extended image
     extend_by = (size-1)//2
     padded_img = np.pad(img, extend_by, 'edge')
-    for i in range(extend_by, width):
-        for j in range(extend_by, height):
-            img_patch = padded_img[j-extend_by:j+extend_by+1, i-extend_by:i+extend_by+1]
-            output[j, i] = img_patch.min()
+    for i in range(extend_by, height+extend_by):
+        for j in range(extend_by, width+extend_by):
+            img_patch = padded_img[i-extend_by:i+extend_by+1, j-extend_by:j+extend_by+1]
+            output[i-extend_by, j-extend_by] = img_patch.min()
     return output
 
 def dilate(img,size=3):
@@ -22,10 +20,10 @@ def dilate(img,size=3):
     #Create extended image
     extend_by = (size-1)//2
     padded_img = np.pad(img, extend_by, 'edge')
-    for i in range(extend_by, width):
-        for j in range(extend_by, height):
-            img_patch = padded_img[j-extend_by:j+extend_by+1, i-extend_by:i+extend_by+1]
-            output[j, i] = img_patch.max()
+    for i in range(extend_by, height+extend_by):
+        for j in range(extend_by, width+extend_by):
+            img_patch = padded_img[i-extend_by:i+extend_by+1, j-extend_by:j+extend_by+1]
+            output[i-extend_by, j-extend_by] = img_patch.max()
     return output
 
 def opening(img,size=3):
